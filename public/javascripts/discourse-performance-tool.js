@@ -142,6 +142,7 @@ class DiscoursePerformanceTool {
         delete store.iterations;
         this.store = store;
         this.printSummary();
+        this.graph();
       }
     }else if(store.data){
       this.printSummary();
