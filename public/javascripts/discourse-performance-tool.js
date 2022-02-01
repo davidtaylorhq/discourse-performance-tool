@@ -7,6 +7,7 @@ class DiscoursePerformanceTool {
     "loading",
     "initializing",
     "rendering",
+    "init + rendering",
   ];
 
   static start(){
@@ -108,6 +109,7 @@ class DiscoursePerformanceTool {
     data.set('loading', this.discourseBootJsEntry.startTime - this.navigationEntry.responseStart);
     data.set('initializing', this.navigationEntry.domContentLoadedEventStart - this.discourseBootJsEntry.startTime);
     data.set('rendering', this.firstContentfulPaintEntry.startTime - this.navigationEntry.domContentLoadedEventStart);
+    data.set('init + rendering', this.firstContentfulPaintEntry.startTime - this.discourseBootJsEntry.startTime);
     
 
     const tableRows = []
@@ -117,12 +119,10 @@ class DiscoursePerformanceTool {
         `${this.round(value).toFixed(1)} ms`
       ])
     })
-    const total = Array.from(data.values()).reduce((a, b) => a + b, 0);
 
     const table = this.table([
       ["STAGE", "DURATION"],
-      ...tableRows,
-      ["TOTAL", `${total.toFixed(1)} ms`]
+      ...tableRows
     ])
 
     this.log(`Data for this page load:\n\n${table}\nRun DiscoursePerformanceTool.help() for more info\n`)
@@ -358,7 +358,7 @@ class DiscoursePerformanceTool {
           <div class='control'>
             <label for='stage'>Stage:</label>
             <select name='stage'>
-              ${this.DEFAULT_COLUMNS.map(c => `<option value='${c}' ${c==='rendering' ? 'selected' : ''}>${c}</option>`).join('\n')}
+              ${this.DEFAULT_COLUMNS.map(c => `<option value='${c}' ${c==='init + rendering' ? 'selected' : ''}>${c}</option>`).join('\n')}
             </select>
           </div>
           <div class='control'>
