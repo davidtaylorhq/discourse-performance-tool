@@ -233,10 +233,15 @@ class DiscoursePerformanceTool {
     localStorage.setItem("discourse-performance-tool-data", raw);
   }
 
-  run(label, iterations){
+  run(label, iterations, {force = false} = {}){
     const store = this.store;
     if(store.data?.[label]){
       this.log(`There is already data stored for ${label}. To clear, run DiscoursePerformanceTool.delete('${label}')`)
+      return;
+    }
+
+    if(!force && Ember.ENV._DEBUG_RENDER_TREE){
+      this.log("⚠️ WARNING - Ember debug rendering is enabled. Make sure you are running Ember in production mode, and that the Ember Inspector browser extension is not running. To bypass this check, use `run('label', 100, { force: true })`")
       return;
     }
 
