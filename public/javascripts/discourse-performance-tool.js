@@ -324,6 +324,7 @@ class DiscoursePerformanceTool {
             "controls"
             "graph";
           width: 100%;
+          height: 100%;
           overflow: scroll;
         }
         .controls {
@@ -340,6 +341,7 @@ class DiscoursePerformanceTool {
           grid-area: graph;
           place-self: center;
           width: 800px;
+          height: 400px;
           max-width: 100%;
         }
       </style>
@@ -384,11 +386,11 @@ class DiscoursePerformanceTool {
     const graphElement = shadow.querySelector('.discourse-performance-graph')
     const controlsElement = shadow.querySelector('.controls')
 
-    this.chart = new Chart(graphElement.getContext("2d"), this.buildChartConfig(controlsElement));
+    this.chart = new Chart(graphElement.getContext("2d"), this.buildChartConfig(controlsElement, shadow));
 
     controlsElement.addEventListener('change', () => {
       this.chart?.destroy();
-      this.chart = new Chart(graphElement.getContext("2d"), this.buildChartConfig(controlsElement));
+      this.chart = new Chart(graphElement.getContext("2d"), this.buildChartConfig(controlsElement, shadow));
     })
 
     shadow.querySelector('.download-png').addEventListener('click', () => {
@@ -403,10 +405,11 @@ class DiscoursePerformanceTool {
     });
   }
 
-  buildChartConfig(controlsDiv){
+  buildChartConfig(controlsDiv, shadowRoot){
     this.colorIndex = 0;
     let config;
-    if(controlsDiv.querySelector('select[name=type]').value === "boxplot"){
+    const type = controlsDiv.querySelector('select[name=type]').value;
+    if(type === "boxplot"){
       config = this.buildChartBoxplotConfig(controlsDiv);
     }else{
       config = this.buildChartHistogramConfig(controlsDiv);
@@ -425,6 +428,13 @@ class DiscoursePerformanceTool {
     };
 
     config.plugins = [whiteBackgroundPlugin]
+
+    let height = 400;
+    if(type === "boxplot"){
+      height = Math.max(height, config.data.labels.length * 100);
+    }
+
+    shadowRoot.querySelector('.canvas-wrapper').style.height = `${height}px`;
 
     return config;
   }
@@ -463,6 +473,10 @@ class DiscoursePerformanceTool {
         }]
       },
       options: {
+        layout: {
+          padding: 10
+        },
+        maintainAspectRatio: false,
         animation: {
           duration: 0
         },
