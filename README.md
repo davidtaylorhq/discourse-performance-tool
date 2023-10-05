@@ -1,3 +1,7 @@
+# DEPRECATED
+
+This plugin is deprecated in favour of third-party tools like Google's 'tachometer'. See https://meta.discourse.org/t/281158 for more information.
+
 # discourse-performance-tool
 
 Client-side performance is difficult to measure. Browser development tools can help, but results can still vary massively between refreshes. This makes it quite difficult to definitively say whether a change hurts or improves performance.
